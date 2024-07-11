@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int maxn = 25;
+int n1, n2, L, M, P;
+vector<int> ban[maxn];
+int counter[maxn], ans = 0;
+
+void calc(int start, int totalL, int totalM_1, int totalM_2) {
+    if (totalL > L) return;
+    if (max(totalM_1, totalM_2) > M) return;
+    if (min(totalM_1, totalM_2) > 0) {
+        ++ ans;
+    }
+    if (totalM_1 == 0 && totalM_2 > 0) return;
+    for (int i = start; i < n1 + n2; ++ i) {
+        if (counter[i]) continue;
+        for (auto x : ban[i]) counter[x] ++;
+        if (i <= n1) {
+            calc(i + 1, totalL + 1, totalM_1 + 1, totalM_2);
+        } else {
+            calc(i + 1, totalL + 1, totalM_1, totalM_2 + 1);
+        }
+        for (auto x : ban[i]) counter[x] --;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(0), cout.tie(0);
+        cin >> n1 >> n2;
+    cin >> L >> M >> P;
+    for (int i = 1; i <= P; ++ i) {
+        int x, y; cin >> x >> y;
+        ban[x].push_back(y);
+        ban[y].push_back(x);
+    }
+    calc(1, 0, 0, 0);
+    cout << ans << "\n";
+    return 0;
+}
